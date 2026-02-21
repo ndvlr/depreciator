@@ -1,0 +1,3 @@
+"""
+Calculator for depreciation methods.
+"""
