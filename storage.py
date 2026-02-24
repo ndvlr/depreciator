@@ -34,4 +34,31 @@ def retrieve_data(x):
         for row in depreciation_reader:
             if row[0] == x:
                 return row[0], float(row[1]), float(row[2]), int(row[3]), row[4]
+            
 
+def view_assets():
+    assets = []
+    try:
+        with open("data/depreciation_data.csv", "r") as file:
+            depreciation_reader = csv.reader(file, delimiter=",", quotechar="\"")
+            for row in depreciation_reader:
+                assets.append(row[0])
+    except FileNotFoundError:
+        return []
+    return assets
+
+
+def remove_asset(x):
+    lines = []
+    with open("data/depreciation_data.csv", "r") as file:
+        depreciation_reader = csv.reader(file, delimiter=",", quotechar="\"")
+        for row in depreciation_reader:
+            if row[0] != x:
+                lines.append(row)
+    with open("data/depreciation_data.csv", "w", newline='') as file:
+        depreciation_writer = csv.writer(file, delimiter=",", quotechar="\"")
+        depreciation_writer.writerows(lines)
+
+def remove_all_assets():
+    with open("data/depreciation_data.csv", "w", newline='') as file:
+        pass  # This will effectively clear the file

@@ -24,15 +24,15 @@ def get_user_input():
     life = input("Enter the useful life of the asset in years: ")
     methods = ["straight line", "double declining balance", "sum of years digits", "sl", "ddb", "syd"]
     print(f"Available depreciation methods: {methods}")
-    method = input("Enter the depreciation method methods: ")
+    method = input("Enter the depreciation method: ")
     print("\n")
     return item, cost, salvage, life, method
 
 # Assess user intent for adding new asset or accessing existing asset or quitting the app
 def intent():
-    intent = input("Do you want to add a new asset or access depreciation schedule for an existing asset? (add/access/quit): ")
-    if intent.lower() not in ["add", "access", "quit"]:
-        raise ValueError()
+    intent = input("Do you want to add a new asset or access depreciation schedule for an existing asset? (add/access/quit/view/remove): ")
+    if intent.lower() not in ["add", "access", "quit", "view", "remove"]:
+        raise ValueError("Please type 'add' to add a new asset, 'access' to access depreciation schedule for an existing asset, 'view' to view all assets, 'remove' to remove an asset, or 'quit' to exit the app.")
     return intent.lower()
 
 # Normalizes for storage and calculation
@@ -65,9 +65,8 @@ def main():
             intention = intent()
             if intention == "add":
                 item, cost, salvage, life, method = get_user_input()
-                normalize(item, cost, salvage, life, method)
-                validate_input(item, cost, salvage, life, method)
                 item, cost, salvage, life, method = normalize(item, cost, salvage, life, method)
+                validate_input(item, cost, salvage, life, method)
                 # Store the data
                 storage.store_data(item, cost, salvage, life, method)
             elif intention == "access":
@@ -78,6 +77,34 @@ def main():
                     # Display the results
                     display.display_depreciation(item.title(), depreciation)
                     return
+                
+                print("Asset not found, please try again.")
+                continue
+            elif intention == "view":
+                assets = storage.view_assets()
+                if not assets:
+                    print("No assets found.")
+                    continue
+                print("Assets:")
+                for asset in assets:
+                    print(f"- {asset.title()}")
+            elif intention == "remove":
+                checking = input("Enter the name of the asset to remove: ").lower()
+                if checking.lower() == "all":
+                    confirm = input("Are you sure you want to remove all assets? (yes/no): ")
+                    if confirm.lower() == "yes" or confirm.lower() == "y":
+                        storage.remove_all_assets()
+                        print("All assets removed successfully.")
+                    else:
+                        print("Operation cancelled.")
+                    continue
+                if storage.check_item(checking):
+                    # Remove the asset from the CSV file
+                    storage.remove_asset(checking)
+                    print(f"Asset '{checking.title()}' removed successfully.")
+                else:
+                    print("Asset not found, please try again.")
+                    continue
             elif intention == "quit":
                 print("Goodbye!")
                 return
