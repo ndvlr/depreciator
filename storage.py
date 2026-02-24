@@ -59,6 +59,7 @@ def remove_asset(x):
         depreciation_writer = csv.writer(file, delimiter=",", quotechar="\"")
         depreciation_writer.writerows(lines)
 
+
 def remove_all_assets():
     with open("data/depreciation_data.csv", "w", newline='') as file:
         pass  # This will effectively clear the file

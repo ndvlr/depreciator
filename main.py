@@ -77,7 +77,6 @@ def main():
                     # Display the results
                     display.display_depreciation(item.title(), depreciation)
                     return
-                
                 print("Asset not found, please try again.")
                 continue
             elif intention == "view":
